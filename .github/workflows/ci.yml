@@ -46,5 +46,11 @@ jobs:
       # credencial, aplicadas ao binário que o Homebrew acabou de linkar.
       - name: Conferir o binário linkado
         run: |
-          ca config path | grep -q 'dentro do PHAR'
-          ca list --format=json | grep -q '"config config-path"\|config'
+          # Dentro do PHAR o .env da raiz do projeto deixa de ser candidato.
+          ca config path | grep -q 'pulado: dentro do PHAR'
+
+          # Sem credencial o CLI degrada, e são justamente os comandos `config`
+          # que precisam sobreviver — são eles que permitem sair do modo
+          # degradado. Casar só com a palavra "config" seria tautologia: ela
+          # aparece no nome do próprio binário na saída.
+          ca list --format=json | grep -q '"name":"config init"'
