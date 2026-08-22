@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  # O agendamento é o que pega a quebra que ninguém provoca: o Homebrew sobe o
+  # `php` de major, o wrapper passa a apontar para um PHP que não existe mais, e
+  # sem isto só o primeiro usuário a instalar descobriria.
+  schedule:
+    - cron: '0 6 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  formula:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: homebrew-tap
+
+      # O `brew audit`/`install` precisa enxergar o checkout como um tap de
+      # verdade, no caminho que o nome `heitoralthmann/tap` resolve.
+      - name: Registrar o checkout como tap local
+        run: |
+          dest="$(brew --repository)/Library/Taps/heitoralthmann/homebrew-tap"
+          mkdir -p "$(dirname "$dest")"
+          ln -s "$GITHUB_WORKSPACE/homebrew-tap" "$dest"
+
+      - name: Audit
+        run: brew audit --strict --online heitoralthmann/tap/conta-azul-cli
+
+      # Puxa o `php` engarrafado — alguns minutos —, mas é exatamente o caminho
+      # que o usuário percorre.
+      - name: Install
+        run: brew install heitoralthmann/tap/conta-azul-cli
+
+      - name: Test
+        run: brew test heitoralthmann/tap/conta-azul-cli
+
+      # O `test do` da fórmula cobre `--version` nos dois nomes. Estas são as
+      # outras duas checagens do tools/smoke-test.sh que não dependem de
+      # credencial, aplicadas ao binário que o Homebrew acabou de linkar.
+      - name: Conferir o binário linkado
+        run: |
+          ca config path | grep -q 'dentro do PHAR'
+          ca list --format=json | grep -q '"config config-path"\|config'
