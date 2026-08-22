@@ -24,7 +24,7 @@ class ContaAzulCli < Formula
     # apontar para o mesmo PHP que a fórmula declarou como dependência.
     (bin/"ca").write <<~SH
       #!/bin/bash
-      exec "#{Formula["php"].opt_bin}/php" "#{libexec}/conta-azul-cli.phar" "$@"
+      exec "#{formula_opt_bin("php")}/php" "#{libexec}/conta-azul-cli.phar" "$@"
     SH
     chmod 0755, bin/"ca"
 
