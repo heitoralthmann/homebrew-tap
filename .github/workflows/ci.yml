@@ -30,6 +30,19 @@ jobs:
           mkdir -p "$(dirname "$dest")"
           ln -s "$GITHUB_WORKSPACE/homebrew-tap" "$dest"
 
+      # Homebrew 6 recusa carregar fórmula de tap não oficial sem consentimento
+      # explícito. Runners com Homebrew 5 não têm o comando; ali o passo é
+      # inócuo em vez de fatal, e o `install` seguinte prova qual dos dois é o
+      # caso — se a confiança fosse mesmo necessária e não tivesse sido dada,
+      # ele falharia.
+      - name: Confiar na fórmula
+        run: |
+          if brew trust --formula heitoralthmann/tap/conta-azul-cli; then
+            echo "Fórmula marcada como confiável."
+          else
+            echo "brew trust indisponível nesta versão ($(brew --version | head -1)); seguindo."
+          fi
+
       - name: Audit
         run: brew audit --strict --online heitoralthmann/tap/conta-azul-cli
 

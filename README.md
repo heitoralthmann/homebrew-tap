@@ -5,8 +5,15 @@ publico.
 
 ```bash
 brew tap heitoralthmann/tap
+brew trust --formula heitoralthmann/tap/conta-azul-cli
 brew install conta-azul-cli
 ```
+
+O `brew trust` é exigido pelo **Homebrew 6**, que não carrega fórmula de tap
+não oficial sem consentimento explícito. A receita acima confia **na fórmula**,
+não no tap inteiro — assim uma fórmula que eu adicione aqui depois não passa a
+ser aceita sem você olhar. Em Homebrew mais antigo o comando não existe e a
+linha pode ser pulada.
 
 ## Fórmulas
 
