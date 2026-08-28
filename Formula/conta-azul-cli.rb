@@ -4,8 +4,8 @@ class ContaAzulCli < Formula
   # Sem linha `version`: o Homebrew a extrai do `/vX.Y.Z/` da própria URL, e
   # `brew audit --strict` recusa a duplicata. É também por isso que o job
   # `homebrew` do release.yml reescreve só `url` e `sha256`.
-  url "https://github.com/heitoralthmann/conta-azul-cli/releases/download/v0.19.3/conta-azul-cli.phar"
-  sha256 "9113b30ce4dcc3d0e6b1058560a77e8c49ff7cb6a1b57004fa70f60bc15d729c"
+  url "https://github.com/heitoralthmann/conta-azul-cli/releases/download/v0.19.4/conta-azul-cli.phar"
+  sha256 "2816986506a3d421f9683e70d3f4d800d410acfadd15b1cd5c8b7a7c1aa5e2ee"
   license "Apache-2.0"
 
   livecheck do
